@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import BudgetList from './components/BudgetList';
 import BudgetForm from './components/BudgetForm';
 import Alert from './components/Alert';
 import uuid from 'uuid/v4';
 
-const initialGadgets = [
-	{ id: uuid(), definition: "Smth", price: 500},
-	{ id: uuid(), definition: "Smth2", price: 5000},
-]
+const initialGadgets = localStorage.getItem('gadgets') ? JSON.parse(localStorage.getItem('gadgets')) : [];
 
 function App() {
 
@@ -21,6 +18,10 @@ function App() {
 	const [alert, setAlert] = useState({show:false});
 	const [edit, setEdit] = useState(false);
 	const [id, setId] = useState(0);
+
+	useEffect(() => {
+		localStorage.setItem('gadgets', JSON.stringify(gadgets));
+	})
 
 	const handleDefinition = e => {
 		console.log(`Definition: ${e.target.value}`);
@@ -48,6 +49,7 @@ function App() {
 				});
 				setGadgets(curr);
 				setEdit(false);
+				handleAlert({type: "success", text:"Item Edited!"});
 			}else{
 				const singleGadget = { id: uuid(), definition, price};
 				setGadgets([...gadgets, singleGadget]);
